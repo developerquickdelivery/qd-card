@@ -1,0 +1,51 @@
+{
+  "name": "QuickCard Ethiopia",
+  "short_name": "QuickCard",
+  "description": "Ultra-lightweight Digital Business Card & Trade Fair Platform",
+  "start_url": "/widget",
+  "display": "standalone",
+  "background_color": "#070a12",
+  "theme_color": "#070a12",
+  "icons": [
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/images/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Instant QR Share",
+      "short_name": "Quick QR",
+      "description": "Display high-contrast QR code for instant scanning",
+      "url": "/widget?method=qr",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "96x96" }]
+    },
+    {
+      "name": "NFC Beam Card",
+      "short_name": "NFC Beam",
+      "description": "Beam digital business card via NFC tap",
+      "url": "/widget?method=nfc",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Collect Contact Back",
+      "short_name": "Collect Lead",
+      "description": "Capture visitor contact directly on your phone",
+      "url": "/widget?method=exchange",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Telebirr Pay QR",
+      "short_name": "Telebirr Pay",
+      "description": "Instant Telebirr payment receiver code",
+      "url": "/widget?method=pay",
+      "icons": [{ "src": "/images/logo.jpg", "sizes": "96x96" }]
+    }
+  ]
+}

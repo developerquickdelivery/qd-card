@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickCard - Trade Fair Presenter & Printable Badge Suite</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #080c15;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    /* Screen UI toolbar */
+    .toolbar {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 17px;
+      color: #f59e0b;
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    select, button {
+      background: #090e19;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    select:focus, button:focus { outline: none; border-color: #f59e0b; }
+    .btn-primary {
+      background: #f59e0b;
+      color: #090d16;
+      border: none;
+      font-weight: 700;
+    }
+    .btn-primary:hover { background: #d97706; }
+    .btn-boost {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.4);
+      color: #60a5fa;
+    }
+    .btn-boost:hover { background: rgba(59, 130, 246, 0.3); }
+
+    .main-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 16px;
+      background: radial-gradient(circle at center, #141c2e 0%, #060910 100%);
+    }
+
+    /* 1. Fullscreen Phone Kiosk Display Mode */
+    .kiosk-mode {
+      background: #ffffff;
+      color: #000000;
+      width: 100%;
+      max-width: 400px;
+      padding: 36px 26px;
+      border-radius: 30px;
+      box-shadow: 0 25px 60px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.15);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .kiosk-mode.bright-boost {
+      box-shadow: 0 0 80px rgba(255,255,255,0.7);
+      transform: scale(1.03);
+    }
+    .kiosk-badge {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .kiosk-name {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 2px;
+      letter-spacing: -0.4px;
+    }
+    .kiosk-name-am {
+      font-size: 18px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+    .kiosk-role {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 2px;
+    }
+    .kiosk-company {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .kiosk-qr-container {
+      background: #ffffff;
+      padding: 12px;
+      border: 4px solid #000000;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .kiosk-qr-container img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .kiosk-scan-hint {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .kiosk-url {
+      font-size: 12px;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+      background: #f8fafc;
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      margin-top: 4px;
+    }
+
+    /* 2. Lanyard Badge (4" x 6" / 100 x 150mm) */
+    .lanyard-badge {
+      width: 380px;
+      height: 570px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 18px;
+      padding: 26px 22px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.7);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+    .lanyard-hole {
+      width: 48px;
+      height: 10px;
+      background: #cbd5e1;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .badge-header {
+      width: 100%;
+      border-bottom: 2.5px solid #0f172a;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-event-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+    .badge-tag {
+      background: #f59e0b;
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .badge-body {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .badge-name {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .badge-name-am {
+      font-size: 18px;
+      font-weight: 600;
+      color: #475569;
+      margin: 3px 0 6px;
+    }
+    .badge-title {
+      font-size: 14px;
+      color: #1e293b;
+      font-weight: 700;
+    }
+    .badge-company {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .badge-qr-box {
+      background: #fff;
+      padding: 8px;
+      border: 3.5px solid #0f172a;
+      border-radius: 14px;
+      width: 195px;
+      height: 195px;
+    }
+    .badge-qr-box img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .badge-footer {
+      width: 100%;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+
+    /* 3. Table Tent / Booth Stand (Foldable) */
+    .table-tent {
+      width: 520px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.7);
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      border: 2px dashed #94a3b8;
+    }
+    .tent-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+    }
+    .tent-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+      margin-top: -10px;
+    }
+    .tent-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 20px;
+      padding: 12px 0;
+    }
+
+    /* Layout mode toggle classes */
+    .view-kiosk .kiosk-mode { display: flex; }
+    .view-kiosk .lanyard-badge, .view-kiosk .table-tent { display: none; }
+
+    .view-lanyard .lanyard-badge { display: flex; }
+    .view-lanyard .kiosk-mode, .view-lanyard .table-tent { display: none; }
+
+    .view-tent .table-tent { display: flex; }
+    .view-tent .kiosk-mode, .view-tent .lanyard-badge { display: none; }
+
+    /* Print Stylesheet */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .toolbar { display: none !important; }
+      .main-stage {
+        padding: 0 !important;
+        background: none !important;
+      }
+      .lanyard-badge, .table-tent, .kiosk-mode {
+        box-shadow: none !important;
+        border: 1px solid #000000 !important;
+        page-break-inside: avoid;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body class="view-kiosk">
+
+  <!-- Screen Toolbar -->
+  <header class="toolbar">
+    <a href="/" class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H3V6h18v12zm-9-9h7v2h-7zm0 4h5v2h-5z"/></svg>
+      QuickCard Presenter & Badge Mode
+    </a>
+
+    <div class="controls">
+      <!-- Profile select -->
+      <select id="profileSelect" onchange="loadSelectedProfile()">
+        <!-- Populated dynamically -->
+      </select>
+
+      <!-- Layout Mode select -->
+      <select id="layoutSelect" onchange="changeLayout(this.value)">
+        <option value="kiosk">📱 Phone Kiosk / Screen Stand</option>
+        <option value="lanyard">🪪 4"x6" Conference Lanyard Badge</option>
+        <option value="tent">⛺ Table Tent / Booth Stand</option>
+      </select>
+
+      <!-- High Brightness Toggle -->
+      <button type="button" class="btn-boost" onclick="toggleBrightnessBoost()" id="boostBtn">☀️ Max Contrast</button>
+
+      <!-- Print Button -->
+      <button type="button" class="btn-primary" onclick="window.print()">🖨️ Print Badge (300 DPI)</button>
+
+      <a href="/" style="color:#94a3b8; text-decoration:none; font-size:13px; font-weight:600; padding:8px;">← Back to Studio</a>
+    </div>
+  </header>
+
+  <main class="main-stage">
+
+    <!-- 1. Phone Kiosk Display (For instant walk-up presentation on phone screen) -->
+    <div class="kiosk-mode" id="kioskBox">
+      <div class="kiosk-badge">EXPO ATTENDEE BADGE</div>
+      <div class="kiosk-name" id="kioskName">Abebe Bikila</div>
+      <div class="kiosk-name-am" id="kioskNameAm">አበበ ቢቂላ</div>
+      <div class="kiosk-role" id="kioskRole">Senior Commercial Real Estate Broker</div>
+      <div class="kiosk-company" id="kioskCompany">Addis Prime Properties · Addis Ababa</div>
+
+      <div class="kiosk-qr-container">
+        <img id="kioskQrImg" src="/p/abebe/qr.svg" alt="Live QR">
+      </div>
+
+      <div class="kiosk-scan-hint">
+        <span>📸</span> Point Phone Camera to Save
+      </div>
+      <div class="kiosk-url" id="kioskUrl">qc.et/p/abebe</div>
+    </div>
+
+    <!-- 2. Lanyard Badge (4" x 6") -->
+    <div class="lanyard-badge" id="lanyardBox">
+      <div class="lanyard-hole"></div>
+      
+      <div class="badge-header">
+        <span class="badge-event-title">ADDIS EXPO 2026</span>
+        <span class="badge-tag">VIP EXHIBITOR</span>
+      </div>
+
+      <div class="badge-body">
+        <div class="badge-name" id="badgeName">Abebe Bikila</div>
+        <div class="badge-name-am" id="badgeNameAm">አበበ ቢቂላ</div>
+        <div class="badge-title" id="badgeRole">Senior Commercial Real Estate Broker</div>
+        <div class="badge-company" id="badgeCompany">Addis Prime Properties</div>
+      </div>
+
+      <div class="badge-qr-box">
+        <img id="badgeQrImg" src="/p/abebe/qr.svg" alt="Badge QR">
+      </div>
+
+      <div class="badge-footer">
+        <strong>SCAN WITH CAMERA TO SAVE CONTACT</strong><br>
+        Direct vCard · Telebirr · Telegram: <span id="badgeTelegram">@abebe_realestate</span><br>
+        <span style="font-size:10px; color:#94a3b8;">Powered by QuickCard.et</span>
+      </div>
+    </div>
+
+    <!-- 3. Table Tent / Booth Stand -->
+    <div class="table-tent" id="tentBox">
+      <div class="tent-title" id="tentCompany">Addis Prime Properties</div>
+      <div class="tent-subtitle">Connect with our team · Instant Digital Profile</div>
+
+      <div class="tent-flex">
+        <div style="background:#fff; border:3.5px solid #0f172a; border-radius:14px; padding:8px; width:160px; height:160px; flex-shrink:0;">
+          <img id="tentQrImg" src="/p/abebe/qr.svg" alt="Tent QR" style="width:100%; height:100%; display:block;">
+        </div>
+        <div>
+          <h2 style="font-size:19px; font-weight:800; color:#0f172a;" id="tentName">Abebe Bikila</h2>
+          <div style="font-size:13px; color:#2563eb; font-weight:700; margin-bottom:4px;" id="tentRole">Senior Commercial Real Estate Broker</div>
+          <div style="font-size:12px; color:#475569; margin-bottom:10px;">Bole Medhanialem, Addis Ababa</div>
+          <div style="font-size:12px; color:#0f172a; font-weight:600; line-height:1.6;">
+            ✓ Save Contact (.vcf)<br>
+            ✓ View Listings & Telegram<br>
+            ✓ Leave Your Contact Back
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px; color:#64748b; border-top:1px dashed #cbd5e1; padding-top:10px; text-align:center;">
+        Scan with any smartphone camera · Direct link: <strong id="tentUrl">qc.et/p/abebe</strong>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentProfile = null;
+    let profilesData = {};
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const userParam = params.get('user') || window.location.pathname.split('/').pop() || 'abebe';
+
+      try {
+        const res = await fetch('/api/profiles');
+        profilesData = await res.json();
+        
+        const sel = document.getElementById('profileSelect');
+        sel.innerHTML = Object.keys(profilesData).map(k => `
+          <option value="${k}">${profilesData[k].name} (${profilesData[k].company || k})</option>
+        `).join('');
+
+        if (profilesData[userParam]) {
+          sel.value = userParam;
+        } else {
+          sel.value = Object.keys(profilesData)[0] || 'abebe';
+        }
+
+        loadSelectedProfile();
+      } catch (err) {
+        console.error('Failed loading profiles', err);
+      }
+    }
+
+    function loadSelectedProfile() {
+      const id = document.getElementById('profileSelect').value;
+      const p = profilesData[id];
+      if (!p) return;
+      currentProfile = p;
+
+      // Update Kiosk
+      document.getElementById('kioskName').textContent = p.name;
+      document.getElementById('kioskNameAm').textContent = p.name_am || '';
+      document.getElementById('kioskRole').textContent = p.title;
+      document.getElementById('kioskCompany').textContent = `${p.company} · Addis Ababa`;
+      document.getElementById('kioskQrImg').src = `/p/${p.id}/qr.svg`;
+      document.getElementById('kioskUrl').textContent = `${window.location.host}/p/${p.id}`;
+
+      // Update Badge
+      document.getElementById('badgeName').textContent = p.name;
+      document.getElementById('badgeNameAm').textContent = p.name_am || '';
+      document.getElementById('badgeRole').textContent = p.title;
+      document.getElementById('badgeCompany').textContent = p.company;
+      document.getElementById('badgeQrImg').src = `/p/${p.id}/qr.svg`;
+      document.getElementById('badgeTelegram').textContent = `@${p.telegram || 'contact'}`;
+
+      // Update Table Tent
+      document.getElementById('tentName').textContent = p.name;
+      document.getElementById('tentRole').textContent = p.title;
+      document.getElementById('tentCompany').textContent = p.company;
+      document.getElementById('tentQrImg').src = `/p/${p.id}/qr.svg`;
+      document.getElementById('tentUrl').textContent = `${window.location.host}/p/${p.id}`;
+    }
+
+    function changeLayout(mode) {
+      document.body.className = `view-${mode}`;
+    }
+
+    let isBoosted = false;
+    function toggleBrightnessBoost() {
+      isBoosted = !isBoosted;
+      const kiosk = document.getElementById('kioskBox');
+      const btn = document.getElementById('boostBtn');
+      if (isBoosted) {
+        kiosk.classList.add('bright-boost');
+        btn.textContent = '🌟 Max Contrast ON';
+        btn.style.background = '#f59e0b';
+        btn.style.color = '#000';
+      } else {
+        kiosk.classList.remove('bright-boost');
+        btn.textContent = '☀️ Max Contrast';
+        btn.style.background = 'rgba(59, 130, 246, 0.2)';
+        btn.style.color = '#60a5fa';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

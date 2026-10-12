@@ -1,0 +1,50 @@
+[
+  {
+    "id": "lead-1791795798510",
+    "cardId": "abebe",
+    "visitorName": "Ermias Amelga",
+    "visitorPhone": "+251 91 199 8877",
+    "visitorTelegram": "@ermias_access",
+    "visitorCompany": "Access Capital",
+    "note": "Met at Hilton Addis. Interested in corporate team cards for 45 analysts.",
+    "source": "1-on-1 Coffee Meeting",
+    "status": "Qualified",
+    "timestamp": "2026-10-12T09:03:18.510Z"
+  },
+  {
+    "id": "lead-1",
+    "cardId": "abebe",
+    "visitorName": "Tewodros Kassahun",
+    "visitorPhone": "+251 91 234 5678",
+    "visitorTelegram": "@teddy_kass",
+    "visitorCompany": "Zemen Logistics",
+    "note": "Met at Addis Chamber Trade Expo. Interested in renting 250sqm office space in Bole.",
+    "source": "Trade Fair Badge Scan",
+    "status": "New",
+    "timestamp": "2026-10-12T10:15:00.000Z"
+  },
+  {
+    "id": "lead-2",
+    "cardId": "sara",
+    "visitorName": "Solomon Bogale",
+    "visitorPhone": "+251 93 112 3344",
+    "visitorTelegram": "@sol_bogale",
+    "visitorCompany": "Dashen Bank Fintech Lab",
+    "note": "Discussing API integration with FinNet merchant gateway.",
+    "source": "Fintech Summit Booth",
+    "status": "Contacted",
+    "timestamp": "2026-10-12T11:45:00.000Z"
+  },
+  {
+    "id": "lead-3",
+    "cardId": "dawit",
+    "visitorName": "Klaus Lindner",
+    "visitorPhone": "+49 170 555 4321",
+    "visitorTelegram": "@klaus_coffee",
+    "visitorCompany": "Hamburg Specialty Roasters",
+    "note": "Looking for 2 shipping containers of Sidama Grade 1 washed beans.",
+    "source": "Millennium Hall Agro-Expo",
+    "status": "Qualified",
+    "timestamp": "2026-10-11T16:30:00.000Z"
+  }
+]

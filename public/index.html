@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickCard Ethiopia - Enterprise Digital Identity & Trade Fair Studio</title>
+  <meta name="description" content="Ultra-fast digital business cards, NFC profiles, and trade fair badge generator tailored for Ethiopia.">
+  <link rel="stylesheet" href="/css/studio.css">
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header class="studio-header">
+    <div class="header-left">
+      <div class="brand-emblem">
+        <img src="/images/logo.jpg" alt="QuickCard Logo" class="brand-logo" onerror="this.style.display='none'">
+      </div>
+      <div class="brand-title-wrap">
+        <div class="brand-title">
+          QuickCard <span class="gold">Ethiopia</span>
+          <span class="brand-flag">🇪🇹</span>
+        </div>
+        <div class="brand-subtitle">Ultra-lightweight Digital Identity & Trade Fair Networking Suite</div>
+      </div>
+    </div>
+
+    <!-- Live Performance & Addis Ababa Telemetry -->
+    <div class="header-stats">
+      <div class="stat-pill time-pill">
+        <span>📍 Addis Ababa:</span>
+        <strong id="headerAddisClock">13:30 EAT (GMT+3)</strong>
+      </div>
+      <div class="stat-pill">
+        <span class="dot green"></span>
+        <span>Page Size: <strong id="headerPageSize">17.2 KB</strong></span>
+      </div>
+      <div class="stat-pill">
+        <span class="dot blue"></span>
+        <span>3G Latency: <strong id="headerLatency">~0.18s</strong></span>
+      </div>
+      <div class="stat-pill">
+        <span class="dot gold"></span>
+        <span>Leads Captured: <strong id="headerLeadsCount">4</strong></span>
+      </div>
+    </div>
+
+    <!-- Quick Action Links -->
+    <div class="header-right">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="openNewProfileModal()">+ New Profile</button>
+      <a href="/widget" class="btn btn-outline btn-sm" target="_blank">🎛️ Launch HUD</a>
+      <a href="/presenter.html" class="btn btn-outline btn-sm" target="_blank">🪪 Launch Kiosk</a>
+      <a id="headerLiveCardLink" href="/p/abebe" class="btn btn-accent btn-sm" target="_blank">⚡ Live Card</a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('studio')">📱 Interactive Studio & Simulator</button>
+    <button class="nav-tab" onclick="switchTab('quicksettings')">🎛️ Quick Settings Tile & HUD</button>
+    <button class="nav-tab" onclick="switchTab('tradefair')">🪪 Trade Fair & Badge Suite</button>
+    <button class="nav-tab" onclick="switchTab('leads')">📥 Captured Leads CRM <span class="tab-badge" id="leadsBadge">4</span></button>
+    <button class="nav-tab" onclick="switchTab('benchmark')">⚡ Speed & 3G Benchmark Lab</button>
+    <button class="nav-tab" onclick="switchTab('strategy')">🧠 Enterprise Strategy & ROI</button>
+  </nav>
+
+  <!-- Main Work Area -->
+  <main class="studio-main">
+
+    <!-- =============================================================== -->
+    <!-- TAB 1: INTERACTIVE STUDIO & MOBILE SIMULATOR -->
+    <!-- =============================================================== -->
+    <section id="tab-studio" class="tab-pane active">
+      <div class="studio-grid">
+        
+        <!-- Left Column: Profile Selector & Card Editor -->
+        <div class="editor-panel">
+          <div class="panel-header">
+            <div class="panel-title-grp">
+              <h3>Profile Customizer & Brand Editor</h3>
+              <p>Configure bilingual information, direct contact links, and local mobile banking accounts.</p>
+            </div>
+            <div class="profile-chips" id="profileChips">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <form id="cardForm" onsubmit="saveCurrentProfile(event)" class="form-container">
+            
+            <!-- SECTION 1: Identity & Visual Theme -->
+            <div class="form-section-card">
+              <div class="section-head">
+                <span class="icon">👤</span>
+                <h4>1. Identity & Visual Branding</h4>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Profile Slug / Short Link <span class="hint">(Immutable handle)</span></label>
+                  <div class="input-prefix-box">
+                    <span class="prefix">qc.et/p/</span>
+                    <input type="text" id="inpId" required readonly>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Visual Theme Palette</label>
+                  <select id="inpTheme" onchange="updateLivePreview()">
+                    <option value="gold">Addis Gold & Obsidian Dark (Luxury / Real Estate)</option>
+                    <option value="emerald">Habesha Emerald & Midnight (Fintech / Tech)</option>
+                    <option value="navy">Executive Royal Navy (Corporate / Trade)</option>
+                    <option value="crimson">Entoto Sunset Crimson (Creative / Fashion)</option>
+                    <option value="purple">Imperial Amethyst (Legal / Medical)</option>
+                    <option value="obsidian">Titanium Stealth (Minimalist / Private Equity)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Full Name (English)</label>
+                  <input type="text" id="inpName" required oninput="updateLivePreview()" placeholder="e.g. Abebe Bikila">
+                </div>
+                <div class="form-group">
+                  <label>Full Name (አማርኛ)</label>
+                  <input type="text" id="inpNameAm" placeholder="ስም በአማርኛ (e.g. አበበ ቢቂላ)" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Job Title (English)</label>
+                  <input type="text" id="inpTitle" required oninput="updateLivePreview()" placeholder="e.g. Senior Broker">
+                </div>
+                <div class="form-group">
+                  <label>Job Title (አማርኛ)</label>
+                  <input type="text" id="inpTitleAm" placeholder="የሥራ ድርሻ (e.g. ከፍተኛ አማካሪ)" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Company / Organization (English)</label>
+                  <input type="text" id="inpCompany" required oninput="updateLivePreview()" placeholder="e.g. Addis Prime Properties">
+                </div>
+                <div class="form-group">
+                  <label>Company (አማርኛ)</label>
+                  <input type="text" id="inpCompanyAm" placeholder="የድርጅት ስም በአማርኛ" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Profile Avatar</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <select id="inpAvatarSelect" onchange="selectPresetAvatar(this.value)" style="flex:1;">
+                    <option value="/images/abebe.jpg">Abebe Bikila (Executive Male)</option>
+                    <option value="/images/sara.jpg">Sara Haile (Tech / Fintech Female)</option>
+                  </select>
+                  <input type="text" id="inpAvatar" placeholder="Or custom image URL..." oninput="updateLivePreview()" style="flex:1;">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: Direct Contact Channels -->
+            <div class="form-section-card">
+              <div class="section-head">
+                <span class="icon">📞</span>
+                <h4>2. Direct Contact Channels</h4>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Phone Number (Direct Call)</label>
+                  <input type="text" id="inpPhone" required placeholder="+251 91 123 4567" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                  <label>Email Address</label>
+                  <input type="email" id="inpEmail" placeholder="name@company.et" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Telegram Handle</label>
+                  <div class="input-prefix-box">
+                    <span class="prefix">@</span>
+                    <input type="text" id="inpTelegram" placeholder="username" oninput="updateLivePreview()">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>WhatsApp Number</label>
+                  <input type="text" id="inpWhatsapp" placeholder="+251 9..." oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Website URL</label>
+                <input type="url" id="inpWebsite" placeholder="https://company.et" oninput="updateLivePreview()">
+              </div>
+            </div>
+
+            <!-- SECTION 3: Ethiopian Mobile Banking (Telebirr & CBE) -->
+            <div class="form-section-card">
+              <div class="section-head">
+                <span class="icon">💳</span>
+                <h4>3. Ethiopian Mobile Banking & Payment Gateways</h4>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Telebirr Account (Phone or Merchant ID)</label>
+                  <input type="text" id="inpTelebirr" placeholder="0911234567 or Merchant Code" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                  <label>Telebirr Account Holder Name</label>
+                  <input type="text" id="inpTelebirrName" placeholder="Full name registered on Telebirr" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>CBE Birr / Bank Account (Commercial Bank of Ethiopia)</label>
+                  <input type="text" id="inpCbe" placeholder="1000123456789" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                  <label>CBE Account Name</label>
+                  <input type="text" id="inpCbeName" placeholder="Account registered name" oninput="updateLivePreview()">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: Location & Professional Pitch -->
+            <div class="form-section-card">
+              <div class="section-head">
+                <span class="icon">📍</span>
+                <h4>4. Office Location & Professional Bio</h4>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Office Landmark (English)</label>
+                  <input type="text" id="inpLocation" placeholder="e.g. Bole Medhanialem, Edna Mall Bldg 4th Fl" oninput="updateLivePreview()">
+                </div>
+                <div class="form-group">
+                  <label>Office Landmark (አማርኛ)</label>
+                  <input type="text" id="inpLocationAm" placeholder="e.g. ቦሌ መድኃኔዓለም፣ ኤድና ሞል ህንጻ" oninput="updateLivePreview()">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Google Maps Link</label>
+                <input type="url" id="inpMapsUrl" placeholder="https://maps.google.com/?q=..." oninput="updateLivePreview()">
+              </div>
+
+              <div class="form-group">
+                <label>Bio / Pitch (English)</label>
+                <textarea id="inpBio" rows="2" placeholder="1-2 sentences summarizing your service and specialty..." oninput="updateLivePreview()"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Bio (አማርኛ)</label>
+                <textarea id="inpBioAm" rows="2" placeholder="የባለሙያው አጭር መግለጫ..." oninput="updateLivePreview()"></textarea>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <div class="form-actions-left">
+                <button type="submit" class="btn btn-accent">💾 Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="resetCurrentForm()">↩️ Reset</button>
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" onclick="deleteCurrentProfile()">🗑️ Delete Profile</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right Column: Interactive Phone Device Simulator -->
+        <div class="simulator-panel">
+          <div class="simulator-header">
+            <div class="sim-title">
+              <span class="pulse-indicator"></span>
+              Live Phone Simulator (<span id="simProfileName">Abebe Bikila</span>)
+            </div>
+            <div class="sim-controls">
+              <button type="button" class="btn-xs" onclick="toggleQuickSettingsShade()" title="Simulate pulling down Quick Settings tile">🎛️ Quick Tile</button>
+              <button type="button" class="btn-xs" onclick="triggerNfcTap()" title="Simulate physical NFC tap">📶 NFC Beam</button>
+              <button type="button" class="btn-xs" onclick="toggleSimDevice()" id="btnDeviceToggle">📱 iPhone / Android</button>
+              <button type="button" class="btn-xs" onclick="reloadSimIframe()">🔄 Refresh</button>
+            </div>
+          </div>
+
+          <!-- Phone Chassis -->
+          <div class="phone-wrapper" id="phoneChassis">
+            <!-- Top Status Bar with Pull Down Quick Tile Trigger -->
+            <div class="phone-status-bar" onclick="toggleQuickSettingsShade()" title="Click to pull down Quick Settings Tile Shade">
+              <span id="statusBarClock">13:35</span>
+              <div class="status-pull-hint">
+                <span>👇</span> Quick Tile
+              </div>
+              <span>📶 5G 🔋 98%</span>
+            </div>
+
+            <div class="phone-notch">
+              <div class="camera"></div>
+            </div>
+            
+            <iframe id="cardPreviewIframe" src="/p/abebe" title="Live Profile Preview"></iframe>
+
+            <!-- Quick Settings Shade (Simulated Android / iOS Pull Down) -->
+            <div class="quick-settings-shade" id="qsShade">
+              <div class="qs-header">
+                <div class="qs-clock-wrap">
+                  <div class="qs-clock" id="qsClock">13:35</div>
+                  <div class="qs-date">Addis Ababa · Quick Settings</div>
+                </div>
+                <button type="button" class="qs-close-btn" onclick="closeQuickSettingsShade()" title="Close shade">✕</button>
+              </div>
+
+              <div class="qs-grid">
+                <!-- Featured QuickCard Tile -->
+                <div class="qs-tile featured-quickcard" onclick="triggerTileToHud()" title="Tap to display QuickCard HUD Overlay without opening browser!">
+                  <div class="qs-tile-icon">🪪</div>
+                  <div class="qs-tile-text">
+                    <div class="qs-tile-name">QuickCard Share</div>
+                    <div class="qs-tile-sub">Tap to Display Floating HUD</div>
+                  </div>
+                </div>
+
+                <!-- Realistic OS Quick Tiles -->
+                <div class="qs-tile active">
+                  <div class="qs-tile-icon">📶</div>
+                  <div class="qs-tile-text">
+                    <div class="qs-tile-name">Internet</div>
+                    <div class="qs-tile-sub">Ethio Telecom 5G</div>
+                  </div>
+                </div>
+
+                <div class="qs-tile active">
+                  <div class="qs-tile-icon">🔵</div>
+                  <div class="qs-tile-text">
+                    <div class="qs-tile-name">Bluetooth</div>
+                    <div class="qs-tile-sub">Connected</div>
+                  </div>
+                </div>
+
+                <div class="qs-tile">
+                  <div class="qs-tile-icon">🔦</div>
+                  <div class="qs-tile-text">
+                    <div class="qs-tile-name">Flashlight</div>
+                    <div class="qs-tile-sub">Off</div>
+                  </div>
+                </div>
+
+                <div class="qs-tile">
+                  <div class="qs-tile-icon">🌙</div>
+                  <div class="qs-tile-text">
+                    <div class="qs-tile-name">Do Not Disturb</div>
+                    <div class="qs-tile-sub">Off</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="font-size:11px; color:#94a3b8; text-align:center; margin-top:auto; background:rgba(255,255,255,0.04); padding:8px 10px; border-radius:10px;">
+                💡 Tap <strong>QuickCard Share</strong> to instantly pop up your card widget with zero browser latency!
+              </div>
+            </div>
+
+            <!-- Floating QuickCard HUD Popup Overlay (No browser or app needed!) -->
+            <div class="phone-hud-overlay" id="phoneHudOverlay" onclick="if(event.target===this) closeHudOverlay()">
+              <div class="sim-hud-sheet">
+                <div class="sim-hud-handle"></div>
+                <div class="sim-hud-header">
+                  <div class="sim-hud-user">
+                    <img src="/images/abebe.jpg" class="sim-hud-avatar" id="simHudAvatar" alt="Avatar">
+                    <div>
+                      <div style="font-size:13.5px; font-weight:800; color:#fff;" id="simHudName">Abebe Bikila</div>
+                      <div style="font-size:10.5px; color:#94a3b8;" id="simHudRole">Addis Prime Properties</div>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-xs" onclick="closeHudOverlay()">✕</button>
+                </div>
+
+                <!-- Sharing Method Selector Pills -->
+                <div class="sim-hud-methods-bar">
+                  <button type="button" class="sim-hud-tab active" onclick="switchSimHudMethod('qr')" id="simTabQr">⚡ QR Code</button>
+                  <button type="button" class="sim-hud-tab" onclick="switchSimHudMethod('nfc')" id="simTabNfc">📶 NFC Beam</button>
+                  <button type="button" class="sim-hud-tab" onclick="switchSimHudMethod('exchange')" id="simTabExchange">🤝 2-Way Save</button>
+                  <button type="button" class="sim-hud-tab" onclick="switchSimHudMethod('pay')" id="simTabPay">💳 Telebirr</button>
+                </div>
+
+                <!-- Dynamic Stage -->
+                <div class="sim-hud-stage">
+                  <div id="simStageQr" style="display:flex; flex-direction:column; align-items:center;">
+                    <div style="background:#fff; padding:8px; border-radius:14px; width:155px; height:155px; margin-bottom:8px; border:3px solid #000;">
+                      <img id="simHudQrImg" src="/p/abebe/qr.svg" style="width:100%; height:100%; display:block;" alt="QR">
+                    </div>
+                    <div style="font-size:11.5px; font-weight:800; color:#fff;">📸 Camera Scan to Save Contact</div>
+                    <div style="font-size:10px; color:#94a3b8; font-family:var(--font-mono);" id="simHudShortUrl">qc.et/p/abebe</div>
+                  </div>
+
+                  <div id="simStageNfc" style="display:none; flex-direction:column; align-items:center; gap:8px;">
+                    <div style="font-size:36px; animation:nfcRing 1.4s infinite;">📶</div>
+                    <div style="font-size:13.5px; font-weight:800; color:#fff;">Tap Phones to Beam</div>
+                    <div style="font-size:11px; color:#94a3b8; max-width:210px; line-height:1.4;">
+                      NTAG216 instant beam triggered. Contact transfers with zero app or browser open.
+                    </div>
+                  </div>
+
+                  <div id="simStageExchange" style="display:none; width:100%; text-align:left;">
+                    <div style="font-size:11.5px; font-weight:800; color:#fff; margin-bottom:6px;">Collect Stranger's Info:</div>
+                    <input type="text" id="simQuickLeadName" placeholder="Visitor Name / ስም" style="width:100%; background:#131c2e; border:1px solid var(--border-subtle); color:#fff; padding:7px 9px; border-radius:7px; font-size:12px; margin-bottom:6px; outline:none;">
+                    <input type="text" id="simQuickLeadPhone" placeholder="Phone or @telegram" style="width:100%; background:#131c2e; border:1px solid var(--border-subtle); color:#fff; padding:7px 9px; border-radius:7px; font-size:12px; margin-bottom:8px; outline:none;">
+                    <button type="button" class="btn btn-accent btn-xs" onclick="submitSimQuickLead()" style="width:100%;">Save Contact to Leads CRM</button>
+                  </div>
+
+                  <div id="simStagePay" style="display:none; width:100%; text-align:left;">
+                    <div style="background:rgba(0,136,204,0.15); border:1px solid rgba(0,136,204,0.35); border-radius:10px; padding:8px 10px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                      <div>
+                        <div style="font-size:10px; font-weight:800; color:#0088cc;">TELEBIRR</div>
+                        <div style="font-size:13px; font-weight:800; color:#fff;" id="simHudTelebirr">0911234567</div>
+                      </div>
+                      <button type="button" class="btn-xs" onclick="copyCardUrl()">Copy</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="btn btn-outline btn-xs" style="flex:1;" onclick="copyCardUrl()">📋 Copy Link</button>
+                  <a id="simHudVcardLink" href="/p/abebe/vcard" class="btn btn-accent btn-xs" style="flex:1;">📥 Save vCard</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="phone-home-bar"></div>
+
+            <!-- Simulated NFC Radio Wave overlay -->
+            <div class="nfc-overlay" id="nfcOverlay">
+              <div class="nfc-wave">📶</div>
+              <div style="color:#fff; font-weight:700; margin-top:14px; font-size:13px;">NFC Card Tapped!</div>
+              <div style="color:#94a3b8; font-size:11px;">Instant URL Beam Activated</div>
+            </div>
+          </div>
+
+          <!-- Live Performance Meter beneath Phone -->
+          <div class="sim-perf-badge">
+            <span>⚡ Weight: <strong id="simByteBadge">27.1 KB</strong></span>
+            <span>📶 3G Load: <strong id="sim3GBadge">0.29s</strong></span>
+            <span>🛡️ Quick Tile: <strong>0.05s Instant</strong></span>
+          </div>
+
+          <!-- Bottom Simulator Toolbar -->
+          <div class="simulator-toolbar">
+            <button type="button" class="btn btn-sm btn-accent" onclick="toggleQuickSettingsShade()">🎛️ Pull Down Quick Tile</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="triggerTileToHud()">⚡ Instant HUD Popup</button>
+            <a id="btnSimDirectVcard" href="/p/abebe/vcard" class="btn btn-sm btn-outline">📥 Test 1-Tap vCard</a>
+            <a id="btnSimOpenTab" href="/p/abebe" target="_blank" class="btn btn-sm btn-outline">↗️ Open Full Tab</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TAB 2: TRADE FAIR & BADGE SUITE -->
+    <!-- =============================================================== -->
+    <section id="tab-tradefair" class="tab-pane">
+      <div class="tradefair-container">
+        
+        <div class="tf-banner">
+          <div>
+            <h2>Trade Fair, Expo & Booth Networking Suite</h2>
+            <p>Solve stranger-sharing in crowded convention halls: high-contrast 300 DPI QR badges, table tents, and 1-tap contact bounce-back without exchanging paper cards.</p>
+          </div>
+          <div class="tf-actions">
+            <button type="button" class="btn btn-accent" onclick="window.print()">🖨️ Print Current Badge (300 DPI)</button>
+            <a href="/presenter.html" target="_blank" class="btn btn-outline">📱 Launch Booth Kiosk Mode</a>
+          </div>
+        </div>
+
+        <!-- Format Selector Toolbar -->
+        <div class="tf-format-bar">
+          <div class="format-btn-grp">
+            <button type="button" class="btn-format active" onclick="switchBadgeFormat('lanyard')" id="btnFormatLanyard">🪪 4" x 6" Conference Lanyard Badge</button>
+            <button type="button" class="btn-format" onclick="switchBadgeFormat('tent')" id="btnFormatTent">⛺ Booth Table Tent Stand</button>
+            <button type="button" class="btn-format" onclick="switchBadgeFormat('nfc')" id="btnFormatNfc">💳 Pocket NFC Matte Card (CR80)</button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px;">
+            <label style="font-size:12px; color:var(--text-muted);">Event Name:</label>
+            <input type="text" id="inpBadgeEvent" value="Addis Chamber International Expo 2026" oninput="updateBadgeDisplay()" style="background:#090e19; border:1px solid var(--border-subtle); color:#fff; padding:6px 10px; border-radius:6px; font-size:12px;">
+          </div>
+        </div>
+
+        <!-- Live Visual Badge Stage -->
+        <div class="badge-stage">
+          
+          <!-- FORMAT 1: Conference Lanyard Badge (4" x 6") -->
+          <div class="preview-lanyard" id="formatLanyard">
+            <div class="lanyard-hole-punch"></div>
+            
+            <div class="badge-top-row">
+              <span class="badge-event-name" id="badgeEventLabel">ADDIS CHAMBER EXPO 2026</span>
+              <span class="badge-tag-pill">VIP EXHIBITOR</span>
+            </div>
+
+            <div class="badge-center">
+              <div class="badge-name-en" id="badgeNameEn">Abebe Bikila</div>
+              <div class="badge-name-am" id="badgeNameAm">አበበ ቢቂላ</div>
+              <div class="badge-role" id="badgeRole">Senior Commercial Real Estate Broker</div>
+              <div class="badge-comp" id="badgeComp">Addis Prime Properties</div>
+            </div>
+
+            <div class="badge-qr-box">
+              <img id="badgeQrImg" src="/p/abebe/qr.svg" alt="Scan QR Code">
+            </div>
+
+            <div class="badge-bottom">
+              <span>SCAN WITH ANY CAMERA TO SAVE CONTACT & TELEBIRR</span>
+              <div style="font-size:10px; color:#94a3b8; font-family:monospace; margin-top:2px;" id="badgeUrlText">qc.et/p/abebe</div>
+            </div>
+          </div>
+
+          <!-- FORMAT 2: Booth Table Tent Stand (Tri-fold) -->
+          <div class="preview-tent" id="formatTent">
+            <div style="text-align:center; margin-bottom:16px;">
+              <h3 style="font-size:20px; font-weight:800; color:#0f172a;" id="tentCompName">Addis Prime Properties</h3>
+              <p style="font-size:13px; color:#64748b;">Scan to Save Contact & Pay via Telebirr</p>
+            </div>
+            <div class="tent-split">
+              <div style="text-align:center;">
+                <div style="font-size:11px; font-weight:700; color:#0f172a; margin-bottom:6px;">📱 SAVE OFFICIAL CONTACT</div>
+                <div style="width:160px; height:160px; margin:0 auto; border:3px solid #0f172a; border-radius:12px; padding:6px;">
+                  <img id="tentQr1" src="/p/abebe/qr.svg" style="width:100%; height:100%;">
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:4px;">Direct vCard & Telegram</div>
+              </div>
+
+              <div style="text-align:center;">
+                <div style="font-size:11px; font-weight:700; color:#0088cc; margin-bottom:6px;">💳 TELEBIRR INSTANT TRANSFER</div>
+                <div style="width:160px; height:160px; margin:0 auto; border:3px solid #0088cc; border-radius:12px; padding:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f0f9ff;">
+                  <span style="font-size:12px; font-weight:800; color:#0088cc;">telebirr</span>
+                  <div style="font-size:16px; font-weight:800; color:#0f172a; margin:8px 0;" id="tentTelebirr">0911234567</div>
+                  <span style="font-size:10px; color:#64748b;">Merchant / Personal</span>
+                </div>
+                <div style="font-size:11px; color:#64748b; margin-top:4px;">1-Tap Account Number</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FORMAT 3: Pocket NFC Matte Card (CR80) -->
+          <div class="preview-nfc-card" id="formatNfc">
+            <div class="nfc-emblem">📶</div>
+            <div>
+              <div style="font-size:12px; color:var(--accent-gold); font-weight:700; letter-spacing:1px; text-transform:uppercase;">QUICKCARD ETHIOPIA</div>
+              <div style="font-size:24px; font-weight:800; margin-top:4px;" id="nfcName">Abebe Bikila</div>
+              <div style="font-size:13px; color:#cbd5e1;" id="nfcRole">Senior Broker</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+              <div>
+                <div style="font-size:11px; color:#94a3b8;" id="nfcComp">Addis Prime Properties</div>
+                <div style="font-size:10px; color:#64748b; font-family:monospace;">NFC CHIP: NTAG216 (888 BYTES)</div>
+              </div>
+              <div style="background:#fff; border-radius:8px; padding:4px; width:48px; height:48px;">
+                <img id="nfcQrThumb" src="/p/abebe/qr.svg" style="width:100%; height:100%;">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3 Feature Cards Grid -->
+        <div class="tf-cards-grid">
+          
+          <div class="tf-tool-card">
+            <div class="tf-card-icon">🪪</div>
+            <h3>Conference Lanyard Badges (4" x 6")</h3>
+            <p>Every team member wears their QR code on their chest. Strangers can scan with their phone camera from 1.5 meters away without touching or exchanging cards.</p>
+            <ul class="feature-bullets">
+              <li>High-contrast 300 DPI QR code matrix</li>
+              <li>Dual language: English & Amharic attendee title</li>
+              <li>Ready to print on standard cardstock / badge holders</li>
+            </ul>
+            <button type="button" onclick="switchBadgeFormat('lanyard')" class="btn btn-sm btn-outline">Preview Lanyard Badge →</button>
+          </div>
+
+          <div class="tf-tool-card">
+            <div class="tf-card-icon">⛺</div>
+            <h3>Booth Table Tents & Counter Stands</h3>
+            <p>Placed at your expo booth counter, hotel reception, or conference table. Visitors tap or scan while discussing, and their contact lands in your CRM.</p>
+            <ul class="feature-bullets">
+              <li>Dual language: English & Amharic scanning prompts</li>
+              <li>Includes direct Telebirr QR for quick sales/tips</li>
+              <li>Prints as a folded desk triangle or acrylic insert</li>
+            </ul>
+            <button type="button" onclick="switchBadgeFormat('tent')" class="btn btn-sm btn-outline">Preview Booth Stand →</button>
+          </div>
+
+          <div class="tf-tool-card">
+            <div class="tf-card-icon">🤝</div>
+            <h3>"Send Contact Back" 2-Way Exchange</h3>
+            <p>Solves the fatal flaw of asking for SMS! When visitors view your card, they tap "Send Contact Back" and their name and Telegram/Phone are saved to your CRM.</p>
+            <ul class="feature-bullets">
+              <li>Zero app install required for the stranger</li>
+              <li>Optional instant Telegram redirect fallback</li>
+              <li>Export all collected expo leads to Excel / vCard</li>
+            </ul>
+            <button onclick="switchTab('leads')" class="btn btn-sm btn-accent">View Captured Expo Leads →</button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TAB 3: CAPTURED LEADS CRM -->
+    <!-- =============================================================== -->
+    <section id="tab-leads" class="tab-pane">
+      <div class="leads-container">
+        
+        <div class="leads-top-bar">
+          <div class="leads-title">
+            <h2>Trade Fair & Networking Leads Inbox</h2>
+            <p>Contacts received when people scanned a card and tapped "Send Contact Back".</p>
+          </div>
+          <div class="leads-btn-grp">
+            <button class="btn btn-outline btn-sm" onclick="exportLeadsCSV()">📊 Export CSV (Excel)</button>
+            <button class="btn btn-outline btn-sm" onclick="exportLeadsVCard()">🪪 Export Contacts (.vcf Bundle)</button>
+            <button class="btn btn-accent btn-sm" onclick="openSimLeadModal()">+ Simulate New Lead</button>
+          </div>
+        </div>
+
+        <!-- CRM Metrics Ribbon -->
+        <div class="crm-metrics-ribbon">
+          <div class="metric-card">
+            <div class="label">TOTAL INBOUND LEADS</div>
+            <div class="val" id="metricTotalLeads">4</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">NEW / UNCONTACTED</div>
+            <div class="val" id="metricNewLeads" style="color:var(--accent-emerald);">2</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">QUALIFIED PROSPECTS</div>
+            <div class="val" id="metricQualifiedLeads" style="color:var(--accent-gold);">2</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">TOP CARDHOLDER</div>
+            <div class="val" id="metricTopCardholder">Abebe (2)</div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="crm-toolbar">
+          <div class="crm-search-box">
+            <span>🔍</span>
+            <input type="text" id="leadSearchInput" placeholder="Search leads by name, phone, company, notes..." oninput="filterLeads()">
+          </div>
+
+          <div class="crm-filter-group">
+            <label style="font-size:12px; color:var(--text-muted);">Cardholder:</label>
+            <select id="filterCardholder" onchange="filterLeads()">
+              <option value="all">All Cardholders</option>
+            </select>
+
+            <label style="font-size:12px; color:var(--text-muted);">Status:</label>
+            <select id="filterStatus" onchange="filterLeads()">
+              <option value="all">All Statuses</option>
+              <option value="New">New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="leads-table-wrap">
+          <table class="leads-table">
+            <thead>
+              <tr>
+                <th>Visitor Name</th>
+                <th>Phone / Telegram</th>
+                <th>Company</th>
+                <th>Cardholder</th>
+                <th>Status</th>
+                <th>Meeting Source</th>
+                <th>Notes / Inquiry</th>
+                <th>Time</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTableBody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TAB 4: SPEED & 3G BENCHMARK LAB -->
+    <!-- =============================================================== -->
+    <section id="tab-benchmark" class="tab-pane">
+      <div class="benchmark-container">
+        
+        <div class="bench-header">
+          <h2>Ethiopian Mobile Network Performance Benchmark</h2>
+          <p>Why heavy JavaScript frameworks (React / Next.js) fail in Addis Ababa, and how QuickCard delivers instantaneous sub-second loading on Ethio Telecom 3G.</p>
+        </div>
+
+        <div class="benchmark-cards">
+          <div class="bench-metric-card highlight">
+            <div class="bm-label">QuickCard Ethiopia Page Weight</div>
+            <div class="bm-value green" id="benchBytes">17.2 KB</div>
+            <div class="bm-sub">Zero JS frameworks · Inlined critical CSS · 1 single HTTP request</div>
+          </div>
+
+          <div class="bench-metric-card">
+            <div class="bm-label">Standard Linktree / Popl Profile</div>
+            <div class="bm-value red">1,150 KB</div>
+            <div class="bm-sub">Heavy React bundle, 14 analytics trackers, external webfonts</div>
+          </div>
+
+          <div class="bench-metric-card">
+            <div class="bm-label">Ethio Telecom 3G Load Time</div>
+            <div class="bm-value green" id="bench3G">0.18s</div>
+            <div class="bm-sub">Competitors take 12.2s to 18.5s to load on the same network</div>
+          </div>
+        </div>
+
+        <!-- Simulated Race Box -->
+        <div class="race-simulator-box">
+          <div class="race-top">
+            <div>
+              <h3>Simulated Network Race on Ethiopian Connections</h3>
+              <p style="font-size:12.5px; color:var(--text-muted);">Test how network speeds affect visitor drop-off and first contentful paint.</p>
+            </div>
+            <div class="net-select-grp">
+              <select id="selectNetworkSim" onchange="runSimulatedRace()" style="background:#090e19; border:1px solid var(--border-subtle); color:#fff; padding:8px 12px; border-radius:6px; font-size:12.5px;">
+                <option value="3g">Ethio Telecom 3G (750 kbps, 150ms)</option>
+                <option value="2g">Ethio Telecom 2G Edge (50 kbps, 400ms)</option>
+                <option value="4g">Ethio Telecom 4G LTE (10 Mbps, 50ms)</option>
+                <option value="safaricom">Safaricom Ethiopia 4G (15 Mbps, 40ms)</option>
+              </select>
+              <button type="button" class="btn btn-accent btn-sm" onclick="runSimulatedRace()">⚡ Run Race</button>
+            </div>
+          </div>
+
+          <!-- QuickCard Row -->
+          <div class="perf-row">
+            <div class="perf-name">
+              <span><strong>⚡ QuickCard Ethiopia</strong> (Target: &lt; 25 KB)</span>
+              <span class="badge-fast" id="raceTimeQuickCard">INSTANT (0.18s)</span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill green-bar" id="raceBarQuickCard" style="width: 100%;">17.2 KB · Complete</div>
+            </div>
+          </div>
+
+          <!-- Linktree Row -->
+          <div class="perf-row">
+            <div class="perf-name">
+              <span><strong>Generic Linktree / Popl Profile</strong> (Heavy React / Webpack)</span>
+              <span class="badge-slow" id="raceTimeLinktree">12.2s (67x Slower)</span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill red-bar" id="raceBarLinktree" style="width: 100%;">1,150 KB · Waiting for JS chunks...</div>
+            </div>
+          </div>
+
+          <!-- Heavy Next.js Row -->
+          <div class="perf-row">
+            <div class="perf-name">
+              <span><strong>Corporate Next.js Portal</strong> (Hydration & CSS Modules)</span>
+              <span class="badge-slow" id="raceTimeNextJs">30.4s (High Bounce Risk)</span>
+            </div>
+            <div class="perf-bar-track">
+              <div class="perf-bar-fill red-bar" id="raceBarNextJs" style="width: 100%; opacity:0.8;">2,850 KB · Unusable on 3G</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-spec-grid">
+          <div class="spec-item">
+            <h4>1. RFC 2426 Compliant vCard 3.0</h4>
+            <p>Generates native <code>.vcf</code> MIME stream recognized by iOS Safari and Android Chrome contact books. Completely offline capable once downloaded.</p>
+          </div>
+          <div class="spec-item">
+            <h4>2. Zero External Font Block</h4>
+            <p>Uses native operating system font stack (<code>Segoe UI</code>, <code>Noto Sans Ethiopic</code>, <code>-apple-system</code>). Zero render-blocking Google Font latency on slow networks.</p>
+          </div>
+          <div class="spec-item">
+            <h4>3. Dual Language Amharic (አማርኛ)</h4>
+            <p>Full support for Ethiopic Ge'ez script without extra font downloads, ensuring respect and accessibility for local corporate & government clients.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TAB 5: STRATEGY & ROI CALCULATOR -->
+    <!-- =============================================================== -->
+    <section id="tab-strategy" class="tab-pane">
+      <div class="strategy-container">
+        
+        <div class="exec-summary-card">
+          <div class="exec-tag">EXECUTIVE RECOMMENDATION FOR YOUR MANAGEMENT</div>
+          <h2>The QuickCard Business Model & Go-To-Market Decision</h2>
+          <p>
+            Your analysis raised critical questions: <em>"Is Quick Cards meant for planned 1-on-1 meetings or walk-up trade fair networking?"</em> and <em>"Why is sending SMS a flawed idea?"</em>
+            Here is the clear strategic blueprint and interactive ROI model ready to present to your leadership.
+          </p>
+        </div>
+
+        <!-- Interactive ROI Calculator -->
+        <div class="roi-calculator-box">
+          <h3 style="font-size:18px; font-weight:800; color:#fff; margin-bottom:4px;">🏢 Enterprise ROI & Paperless Savings Calculator (Ethiopian Birr)</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Calculate annual savings for an Ethiopian corporation replacing paper cards with QuickCard team licenses.</p>
+          
+          <div class="roi-grid">
+            <div class="roi-controls">
+              <div class="slider-group">
+                <label>
+                  <span>Number of Team Members:</span>
+                  <strong id="lblRoiStaff">50 Staff</strong>
+                </label>
+                <input type="range" id="sliderRoiStaff" min="5" max="300" step="5" value="50" oninput="calculateRoi()">
+              </div>
+
+              <div class="slider-group">
+                <label>
+                  <span>Paper Card Cost / Staff / Year:</span>
+                  <strong id="lblRoiCost">ETB 2,500</strong>
+                </label>
+                <input type="range" id="sliderRoiCost" min="1000" max="6000" step="250" value="2500" oninput="calculateRoi()">
+              </div>
+            </div>
+
+            <div class="roi-results">
+              <div class="roi-stat">
+                <span class="roi-label">Traditional Paper Expense:</span>
+                <span class="roi-val" id="roiPaperCost" style="color:#f87171;">ETB 125,000 / yr</span>
+              </div>
+              <div class="roi-stat">
+                <span class="roi-label">QuickCard Enterprise Plan:</span>
+                <span class="roi-val" id="roiQcCost">ETB 37,500 / yr</span>
+              </div>
+              <div class="roi-stat">
+                <span class="roi-label">Net Annual Savings for Company:</span>
+                <span class="roi-val savings" id="roiSavings">ETB 87,500 / yr</span>
+              </div>
+              <div class="roi-stat">
+                <span class="roi-label">Paper Business Cards Eliminated:</span>
+                <span class="roi-val" id="roiCardsSaved">25,000 Cards</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Strategic Pillars -->
+        <div class="strategy-sections-grid">
+          
+          <div class="strat-card">
+            <div class="strat-num">PILLAR 01</div>
+            <h3>Resolving "1-on-1 Meeting" vs "Trade Fair"</h3>
+            <p><strong>The Answer:</strong> You do NOT have to choose one over the other. The software engine is identical; only the physical surface changes:</p>
+            <ul>
+              <li><strong>In 1-on-1 meetings:</strong> The user presents via their phone screen widget or taps a sleek physical NFC card. The exchange is intimate and personal.</li>
+              <li><strong>In Trade Fairs & Expos:</strong> The user wears the QuickCard QR on their <strong>conference lanyard badge</strong> or displays the <strong>booth table tent</strong>. Strangers scan freely from 1.5 meters away.</li>
+              <li><strong>The Winner:</strong> Build for Trade Fairs first because trade fairs generate high-volume proof, instant word-of-mouth, and group enterprise sales.</li>
+            </ul>
+          </div>
+
+          <div class="strat-card">
+            <div class="strat-num">PILLAR 02</div>
+            <h3>Why the "SMS Exchange" Idea Was Flawed</h3>
+            <p>You correctly diagnosed the logical contradiction: <em>"Asking someone for their phone number so you can text them your phone number makes no sense."</em></p>
+            <ul>
+              <li>If you already have their number, the exchange already happened.</li>
+              <li>SMS costs money locally (Ethio Telecom airtime) and creates awkward typing friction in noisy rooms.</li>
+              <li><strong>The Replacement:</strong> The <strong>"Send Contact Back / ተገናኝ"</strong> button on the QuickCard profile. The stranger types their Telegram handle or phone directly on the webpage, or taps "Open in Telegram", eliminating manual SMS friction entirely.</li>
+            </ul>
+          </div>
+
+          <div class="strat-card">
+            <div class="strat-num">PILLAR 03</div>
+            <h3>Ethiopian Monetization Model (Telebirr & Enterprise)</h3>
+            <p>Individual consumers in Addis Ababa have low willingness to pay subscriptions. Where the real money is:</p>
+            <ul>
+              <li><strong>B2B Enterprise Team Accounts:</strong> Companies (Banks, Real Estate Developers, Insurance, Importers) pay <strong>ETB 1,500 – 3,000 / staff member / year</strong> for a branded company portal, unified staff profiles, and lead analytics.</li>
+              <li><strong>Physical NFC / Badge Hardware:</strong> Sell custom UV-printed NFC matte cards and acrylic booth stands for <strong>ETB 800 – 1,500</strong> one-time fee.</li>
+              <li><strong>Payment Integration:</strong> Direct Telebirr merchant integration for automated annual renewals without international Visa/Mastercard barriers.</li>
+            </ul>
+          </div>
+
+          <div class="strat-card">
+            <div class="strat-num">PILLAR 04</div>
+            <h3>Immediate 14-Day Next Steps for Your Manager</h3>
+            <ol>
+              <li><strong>Pilot with 1 Real Estate Brokerage:</strong> Give this working prototype to 5 brokers in Bole for 7 days during property viewings.</li>
+              <li><strong>Booth at an Addis Expo:</strong> Print 50 conference lanyard badges for a partner company at Millennium Hall or Addis Chamber Expo.</li>
+              <li><strong>Measure 2 Key Metrics:</strong> (1) Scan-to-view time (&lt; 2 seconds) and (2) Contact-save conversion rate (&gt; 60%).</li>
+              <li><strong>Apply for Telebirr Merchant API:</strong> Set up the automated payment webhook for instant local subscriptions.</li>
+            </ol>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- TAB 6: MOBILE QUICK SETTINGS TILES & FLOATING HUD ENGINE -->
+    <!-- =============================================================== -->
+    <section id="tab-quicksettings" class="tab-pane">
+      <div class="qs-suite-container">
+        
+        <!-- Hero Banner -->
+        <div class="qs-hero-banner">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span class="stat-pill" style="background:rgba(245,158,11,0.18); border-color:var(--accent-gold); color:var(--accent-gold);">
+                ⚡ Zero App &amp; Zero Browser Launch
+              </span>
+              <span class="stat-pill">
+                📱 Android Quick Tile + iOS Action Button
+              </span>
+            </div>
+            <h2>Mobile Quick Settings Tiles &amp; Floating HUD Overlay</h2>
+            <p>
+              When networking in crowded halls, you cannot afford 10 seconds waiting for an app to open or browser tabs to reload. 
+              Swipe down your notification shade or click your Action Button to instantly project a lightweight floating HUD popup directly on your screen.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="/widget" target="_blank" class="btn btn-accent btn-sm">🎛️ Launch Fullscreen HUD Widget</a>
+            <button type="button" class="btn btn-outline btn-sm" onclick="switchTab('studio'); toggleQuickSettingsShade();">📱 Test in Simulator</button>
+          </div>
+        </div>
+
+        <!-- 2 Column Showcase Grid -->
+        <div class="qs-demo-grid">
+          
+          <!-- Column 1: The 4 Instant Sharing Methods -->
+          <div class="qs-interactive-card">
+            <div class="section-head">
+              <span class="icon">🎛️</span>
+              <div>
+                <h3 style="font-size:18px; font-weight:800; color:#fff;">4 Ultra-Fast Sharing Options</h3>
+                <p style="font-size:12.5px; color:var(--text-muted);">Choose your transmission method on the fly with a single thumb tap.</p>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <!-- Option 1: Instant QR -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:24px;">⚡</span>
+                  <span class="badge-fast">0.05s Matrix</span>
+                </div>
+                <h4 style="font-size:14.5px; font-weight:700; color:#fff;">High-Contrast Quick QR</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                  Instantly boosts screen brightness with an inverted high-contrast SVG matrix. Scannable by phone cameras from 1.5m away even under intense midday sun.
+                </p>
+                <div style="margin-top:auto; font-size:11px; color:var(--accent-gold); font-weight:700;">
+                  ✓ Auto-brightness boost
+                </div>
+              </div>
+
+              <!-- Option 2: 1-Tap NFC Beam -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:24px;">📶</span>
+                  <span class="badge-fast">Web NFC Ready</span>
+                </div>
+                <h4 style="font-size:14.5px; font-weight:700; color:#fff;">1-Tap Tactile NFC Beam</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                  Tap your phone against another device or physical card. Uses native Web NFC (NDEFReader) to beam the vCard and digital identity URL in milliseconds.
+                </p>
+                <div style="margin-top:auto; font-size:11px; color:var(--accent-emerald); font-weight:700;">
+                  ✓ Works on Android &amp; iOS
+                </div>
+              </div>
+
+              <!-- Option 3: 2-Way Lead Bounce -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:24px;">🤝</span>
+                  <span class="badge-fast">Two-Way CRM</span>
+                </div>
+                <h4 style="font-size:14.5px; font-weight:700; color:#fff;">2-Way Contact Capture</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                  No paper business card? Hand your phone for 4 seconds so the visitor enters their name &amp; Telegram or phone. Instantly saved into your local Leads CRM.
+                </p>
+                <div style="margin-top:auto; font-size:11px; color:#38bdf8; font-weight:700;">
+                  ✓ Zero SMS airtime fee
+                </div>
+              </div>
+
+              <!-- Option 4: Local Mobile Payments -->
+              <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px; display:flex; flex-direction:column; gap:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:24px;">💳</span>
+                  <span class="badge-fast">Telebirr &amp; CBE</span>
+                </div>
+                <h4 style="font-size:14.5px; font-weight:700; color:#fff;">1-Tap Payment Express</h4>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                  Display Telebirr Merchant QR and CBE Birr account numbers on screen. Copyable with 1 tap or scannable from the payer's banking app.
+                </p>
+                <div style="margin-top:auto; font-size:11px; color:#a855f7; font-weight:700;">
+                  ✓ Local Ethiopian Fintech
+                </div>
+              </div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px 14px; display:flex; align-items:center; justify-content:space-between; margin-top:8px;">
+              <span style="font-size:12.5px; color:var(--text-secondary);">
+                Want to see the HUD popup in action inside the phone preview?
+              </span>
+              <button type="button" class="btn btn-accent btn-xs" onclick="switchTab('studio'); triggerTileToHud();">
+                🚀 Trigger Phone HUD Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Column 2: Architectural Advantages -->
+          <div class="qs-interactive-card">
+            <div class="section-head">
+              <span class="icon">⚡</span>
+              <div>
+                <h3 style="font-size:18px; font-weight:800; color:#fff;">Why Quick Settings Beats Any App</h3>
+                <p style="font-size:12.5px; color:var(--text-muted);">Real-world friction comparison in high-stakes trade fair meetings.</p>
+              </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <table style="width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:12px;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border-subtle); text-align:left; color:var(--text-muted);">
+                  <th style="padding:8px 6px;">Feature</th>
+                  <th style="padding:8px 6px; color:#f87171;">Native Mobile App</th>
+                  <th style="padding:8px 6px; color:#f59e0b;">Mobile Browser Tab</th>
+                  <th style="padding:8px 6px; color:var(--accent-emerald);">QuickCard HUD Tile</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:10px 6px; font-weight:700; color:#fff;">Time to Display</td>
+                  <td style="padding:10px 6px; color:#f87171;">4 - 8 seconds (App launch)</td>
+                  <td style="padding:10px 6px; color:#f59e0b;">3 - 6 seconds (Browser reload)</td>
+                  <td style="padding:10px 6px; color:var(--accent-emerald); font-weight:800;">&lt; 0.1 second (Instant)</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:10px 6px; font-weight:700; color:#fff;">App Required?</td>
+                  <td style="padding:10px 6px; color:#f87171;">Yes (50 - 150 MB download)</td>
+                  <td style="padding:10px 6px; color:#94a3b8;">No</td>
+                  <td style="padding:10px 6px; color:var(--accent-emerald); font-weight:800;">No (Zero download)</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:10px 6px; font-weight:700; color:#fff;">Browser Chrome</td>
+                  <td style="padding:10px 6px; color:#94a3b8;">None</td>
+                  <td style="padding:10px 6px; color:#f87171;">Distracting address bar &amp; tabs</td>
+                  <td style="padding:10px 6px; color:var(--accent-emerald); font-weight:800;">Pure floating HUD Sheet</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                  <td style="padding:10px 6px; font-weight:700; color:#fff;">Offline in Basement</td>
+                  <td style="padding:10px 6px; color:#f59e0b;">Often requires cloud sync</td>
+                  <td style="padding:10px 6px; color:#f87171;">"No Internet" Dinosaur page</td>
+                  <td style="padding:10px 6px; color:var(--accent-emerald); font-weight:800;">100% Offline PWA Cache</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 6px; font-weight:700; color:#fff;">One-Hand Pull Down</td>
+                  <td style="padding:10px 6px; color:#f87171;">Must unlock, find icon</td>
+                  <td style="padding:10px 6px; color:#f87171;">Must open browser, find bookmark</td>
+                  <td style="padding:10px 6px; color:var(--accent-emerald); font-weight:800;">Top swipe or Action Button</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-md); padding:12px; font-size:12.5px; color:#a7f3d0; line-height:1.5;">
+              💡 <strong>The Secret:</strong> By compiling the card into standalone static SVG and vCard buffers with PWA Service Worker caching, the phone OS treats the tile shortcut like a native OS system component.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3-Step Setup Instructions for Real Phones -->
+        <div class="qs-interactive-card">
+          <div class="section-head">
+            <span class="icon">📲</span>
+            <div>
+              <h3 style="font-size:18px; font-weight:800; color:#fff;">3 Easy Ways to Install on Your Real Phone (Under 60 Seconds)</h3>
+              <p style="font-size:12.5px; color:var(--text-muted);">Set up physical Quick Settings access on Android, iPhone 15/16, or older iOS models.</p>
+            </div>
+          </div>
+
+          <div class="qs-setup-steps-grid">
+            
+            <!-- Android Tile Setup -->
+            <div class="qs-step-card">
+              <h4><span>🤖</span> Android Quick Tile (Samsung / Pixel / Xiaomi)</h4>
+              <p>Turn QuickCard into an official Quick Settings tile in your notification pull-down shade:</p>
+              <ol>
+                <li>Open Chrome and navigate to <code style="color:var(--accent-gold);">/widget</code></li>
+                <li>Tap browser menu (⋮) &rarr; <strong>"Install app"</strong> or <strong>"Add to Home Screen"</strong></li>
+                <li>Swipe down from the top of your screen twice to expand the Quick Settings panel</li>
+                <li>Tap the <strong>Edit (Pencil)</strong> icon and drag the <strong>QuickCard Tile</strong> into your top 6 quick toggles</li>
+                <li>Now you can tap the tile anywhere—even on your lock screen—to instantly pop up your card!</li>
+              </ol>
+            </div>
+
+            <!-- iOS Action Button Setup -->
+            <div class="qs-step-card">
+              <h4><span>🍎</span> iPhone Action Button / Control Center (iOS 17 &amp; 18)</h4>
+              <p>Bind QuickCard to your physical hardware Action Button or iOS 18 Control Center:</p>
+              <ol>
+                <li>Open the built-in <strong>Shortcuts</strong> app on your iPhone</li>
+                <li>Create new shortcut: Action &rarr; <strong>"Open URL"</strong> &rarr; enter your widget URL <code style="color:var(--accent-gold);">qc.et/widget</code></li>
+                <li>Go to <strong>Settings &rarr; Action Button</strong> &rarr; select your new <strong>QuickCard Shortcut</strong></li>
+                <li>(For iOS 18): Pull down Control Center, tap <strong>"+"</strong>, and add the Shortcut widget directly to your control grid</li>
+                <li>Press your hardware button anytime for instant haptic card presentation!</li>
+              </ol>
+            </div>
+
+            <!-- Double Tap Back Gesture -->
+            <div class="qs-step-card">
+              <h4><span>👆</span> Double-Tap Phone Back (Any iPhone / Android)</h4>
+              <p>Present your card invisibly by tapping twice on the back of your phone chassis:</p>
+              <ol>
+                <li><strong>On iPhone:</strong> Settings &rarr; Accessibility &rarr; Touch &rarr; <strong>Back Tap</strong> &rarr; Double Tap &rarr; Select "QuickCard Shortcut"</li>
+                <li><strong>On Android:</strong> Settings &rarr; System &rarr; Gestures &rarr; <strong>Quick Tap</strong> &rarr; Open app &rarr; Select "QuickCard"</li>
+                <li>Whenever you meet a client at a trade booth, simply tap the back of your phone twice with your index finger</li>
+                <li>The QuickCard HUD slides up like magic with zero screen taps required!</li>
+              </ol>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =============================================================== -->
+  <!-- MODALS -->
+  <!-- =============================================================== -->
+
+  <!-- Modal 1: Create New Profile -->
+  <div class="modal-overlay" id="newProfileModal" onclick="if(event.target===this) closeNewProfileModal()">
+    <div class="modal-sheet">
+      <h3>Create New QuickCard Profile</h3>
+      <p>Choose an industry template preset or create a custom profile from scratch.</p>
+      
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Select Industry Preset:</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:6px;">
+          <button type="button" class="btn btn-xs btn-outline" onclick="applyProfilePreset('broker')">🏢 Commercial Broker</button>
+          <button type="button" class="btn btn-xs btn-outline" onclick="applyProfilePreset('fintech')">💳 Fintech Executive</button>
+          <button type="button" class="btn btn-xs btn-outline" onclick="applyProfilePreset('exporter')">☕ Coffee Exporter</button>
+          <button type="button" class="btn btn-xs btn-outline" onclick="applyProfilePreset('designer')">🎨 Creative Director</button>
+        </div>
+      </div>
+
+      <form onsubmit="submitNewProfile(event)">
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Profile Slug / ID (letters and numbers only)</label>
+          <input type="text" id="newProfileSlug" required placeholder="e.g. tariku_law">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Full Name (English)</label>
+          <input type="text" id="newProfileName" required placeholder="e.g. Tariku Haile">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Company / Organization</label>
+          <input type="text" id="newProfileCompany" required placeholder="e.g. Addis Law Chambers">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Phone Number</label>
+          <input type="text" id="newProfilePhone" required placeholder="+251 9...">
+        </div>
+        
+        <div class="form-actions" style="margin-top:16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeNewProfileModal()">Cancel</button>
+          <button type="submit" class="btn btn-accent">Create Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Simulated Lead Creation Modal -->
+  <div class="modal-overlay" id="simLeadModal" onclick="if(event.target===this) closeSimLeadModal()">
+    <div class="modal-sheet">
+      <h3>Simulate Inbound Event Lead</h3>
+      <p>Simulate a visitor scanning Abebe's badge at Addis Chamber Expo and tapping "Send Contact Back".</p>
+      
+      <div style="display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-xs btn-outline" onclick="fillLeadPreset('bank')">🏦 Dashen Bank Manager</button>
+        <button type="button" class="btn btn-xs btn-outline" onclick="fillLeadPreset('exporter')">☕ German Coffee Buyer</button>
+        <button type="button" class="btn btn-xs btn-outline" onclick="fillLeadPreset('investor')">💼 Bole Property Investor</button>
+      </div>
+
+      <form onsubmit="submitSimLead(event)">
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Visitor Name</label>
+          <input type="text" id="simVisitorName" required placeholder="e.g. Mahlet Solomon">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Phone / Telegram</label>
+          <input type="text" id="simVisitorPhone" required placeholder="+251 91 333 4444 or @mahlet_sol">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Company</label>
+          <input type="text" id="simVisitorCompany" placeholder="e.g. Dashen Bank">
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Meeting Source</label>
+          <select id="simVisitorSource">
+            <option value="Trade Fair Badge Scan">Trade Fair Badge Scan (Expo)</option>
+            <option value="Booth Table Tent">Booth Table Tent (Kiosk)</option>
+            <option value="1-on-1 Coffee Meeting">1-on-1 Coffee Meeting (Hilton / Sheraton)</option>
+            <option value="Direct Web Link">Direct Web Link</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:10px;">
+          <label>Note / Inquiry</label>
+          <input type="text" id="simVisitorNote" placeholder="e.g. Looking for commercial branch space">
+        </div>
+        <div class="form-actions" style="margin-top:14px;">
+          <button type="button" class="btn btn-secondary" onclick="closeSimLeadModal()">Cancel</button>
+          <button type="submit" class="btn btn-accent">Submit Inbound Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: QR Pass Modal -->
+  <div class="modal-overlay" id="qrPassModal" onclick="if(event.target===this) closeQrPassModal()">
+    <div class="modal-sheet" style="text-align:center;">
+      <h3 id="qrModalHeading">Abebe Bikila's QuickCard QR</h3>
+      <p>Scan with any phone camera or download for print.</p>
+      
+      <div style="background:#fff; border-radius:18px; padding:16px; width:220px; height:220px; margin:16px auto; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <img id="qrModalImg" src="/p/abebe/qr.svg" style="width:100%; height:100%;" alt="QR Code">
+      </div>
+
+      <div style="font-size:12px; font-family:monospace; color:var(--text-muted); background:rgba(255,255,255,0.04); padding:6px 12px; border-radius:8px; margin-bottom:16px;" id="qrModalUrl">
+        qc.et/p/abebe
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <a id="btnDownloadSvg" href="/p/abebe/qr.svg" download="quickcard_qr.svg" class="btn btn-outline btn-sm" style="flex:1;">📥 Download SVG</a>
+        <a id="btnDownloadPng" href="/p/abebe/qr.png" download="quickcard_qr.png" class="btn btn-accent btn-sm" style="flex:1;">📥 Download PNG (300 DPI)</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="studioToast">Action completed!</div>
+
+  <script src="/js/studio.js"></script>
+</body>
+</html>

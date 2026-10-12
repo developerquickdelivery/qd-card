@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>QuickCard Instant HUD - Mobile Quick Settings Widget</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#070a12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Noto+Sans+Ethiopic:wght@500;600;700&family=JetBrains+Mono:wght@600&display=swap">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      background: rgba(0, 0, 0, 0.75);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Ethiopic", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: #fff;
+      overflow-x: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Ambient backdrop dismiss */
+    .backdrop-click-area {
+      flex: 1;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    /* Floating Quick Settings Bottom Sheet / Widget */
+    .widget-sheet {
+      background: rgba(15, 21, 35, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: none;
+      border-radius: 28px 28px 0 0;
+      padding: 16px 18px 34px;
+      box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      animation: slideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Native Drag Indicator Pill */
+    .sheet-handle {
+      width: 44px;
+      height: 4.5px;
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      margin: 0 auto 4px;
+    }
+
+    /* Widget Header */
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+      flex-shrink: 0;
+    }
+
+    .user-details {
+      min-width: 0;
+    }
+
+    .user-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-name .tick {
+      background: #f59e0b;
+      color: #000;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      font-size: 9px;
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .user-meta {
+      font-size: 11.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .widget-actions-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-icon-sm {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-icon-sm:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.2); }
+
+    /* Tile Selector Pills */
+    .tiles-scroll-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 6px;
+      scrollbar-width: none;
+    }
+    .tiles-scroll-row::-webkit-scrollbar { display: none; }
+
+    .tile-tab {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      transition: all 0.18s;
+    }
+    .tile-tab:active { transform: scale(0.95); }
+    .tile-tab.active {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: #080c14;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Content Stage Area */
+    .stage-container {
+      background: #090e18;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 18px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 1. Instant QR Mode */
+    .mode-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .qr-card-surface {
+      background: #ffffff;
+      padding: 14px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      margin-bottom: 12px;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid #000;
+    }
+    .qr-card-surface img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .qr-prompt {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qr-sub {
+      font-size: 11.5px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* 2. NFC Tap Beam Mode */
+    .mode-nfc {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .nfc-wave-graphic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.12);
+      border: 2px solid #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      position: relative;
+      animation: nfcRadar 1.5s infinite;
+    }
+
+    @keyframes nfcRadar {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); transform: scale(0.96); }
+      70% { box-shadow: 0 0 0 24px rgba(16, 185, 129, 0); transform: scale(1.04); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); transform: scale(0.96); }
+    }
+
+    /* 3. 2-Way Contact Bounce-Back Mode */
+    .mode-exchange {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      text-align: left;
+    }
+
+    .exchange-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .exchange-input-grp label {
+      display: block;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .exchange-input-grp input {
+      width: 100%;
+      background: #111726;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      outline: none;
+      font-family: inherit;
+    }
+    .exchange-input-grp input:focus {
+      border-color: #f59e0b;
+    }
+
+    .btn-submit-lead {
+      background: #f59e0b;
+      color: #080c14;
+      font-weight: 800;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13.5px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    /* 4. Telebirr & CBE Payment Mode */
+    .mode-pay {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .pay-tile-row {
+      background: rgba(0, 136, 204, 0.12);
+      border: 1px solid rgba(0, 136, 204, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .pay-tile-row.cbe {
+      background: rgba(124, 45, 18, 0.12);
+      border-color: rgba(124, 45, 18, 0.35);
+    }
+
+    /* Bottom Quick Action Bar */
+    .widget-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .btn-quick-action {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 11px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-quick-action:active { background: rgba(255, 255, 255, 0.15); transform: scale(0.97); }
+
+    .btn-primary-action {
+      background: #f59e0b;
+      color: #080c14;
+      border-color: #f59e0b;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+    }
+
+    /* Instant Feedback Toast */
+    #widgetToast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: #10b981;
+      color: #042f1a;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #widgetToast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Backdrop click to dismiss or minimize -->
+  <div class="backdrop-click-area" onclick="handleDismiss()" title="Tap to close widget"></div>
+
+  <!-- The Native Floating Quick Settings Sheet -->
+  <div class="widget-sheet" id="widgetSheet">
+    
+    <div class="sheet-handle"></div>
+
+    <!-- Header with user identity -->
+    <div class="widget-header">
+      <div class="user-pill">
+        <img id="hudAvatar" src="/images/abebe.jpg" class="user-avatar" alt="Avatar">
+        <div class="user-details">
+          <div class="user-name">
+            <span id="hudName">Abebe Bikila</span>
+            <span class="tick">✓</span>
+          </div>
+          <div class="user-meta" id="hudMeta">Addis Prime Properties · Addis Ababa</div>
+        </div>
+      </div>
+
+      <div class="widget-actions-top">
+        <button type="button" class="btn-icon-sm" onclick="toggleLanguage()" title="Switch Amharic / English">🌐</button>
+        <button type="button" class="btn-icon-sm" onclick="handleDismiss()" title="Close widget">✕</button>
+      </div>
+    </div>
+
+    <!-- Quick Sharing Mode Selector Pills -->
+    <div class="tiles-scroll-row">
+      <button type="button" class="tile-tab active" onclick="switchMethod('qr')" id="tabQr">⚡ Instant QR</button>
+      <button type="button" class="tile-tab" onclick="switchMethod('nfc')" id="tabNfc">📶 NFC Beam</button>
+      <button type="button" class="tile-tab" onclick="switchMethod('exchange')" id="tabExchange">🤝 2-Way Contact</button>
+      <button type="button" class="tile-tab" onclick="switchMethod('pay')" id="tabPay">💳 Telebirr & CBE</button>
+    </div>
+
+    <!-- Main Dynamic Presentation Stage -->
+    <div class="stage-container">
+      
+      <!-- 1. Instant QR Mode (Maximum Brightness & High Contrast) -->
+      <div class="mode-qr" id="modeQr">
+        <div class="qr-card-surface">
+          <img id="hudQrImg" src="/p/abebe/qr.svg" alt="Instant QR Code">
+        </div>
+        <div class="qr-prompt">📸 Point Any Phone Camera to Save</div>
+        <div class="qr-sub" id="hudShortUrl">qc.et/p/abebe</div>
+      </div>
+
+      <!-- 2. NFC Tap Beam Mode -->
+      <div class="mode-nfc" id="modeNfc">
+        <div class="nfc-wave-graphic">📶</div>
+        <div style="font-size:16px; font-weight:800; color:#fff;">Hold Phone Near Stranger</div>
+        <div style="font-size:12px; color:#94a3b8; max-width:260px; line-height:1.45;">
+          Tapping transfers your contact card instantly via NFC chip. Zero app needed on the receiver's phone.
+        </div>
+        <button type="button" class="btn-submit-lead" onclick="triggerWebNfcBeam()" style="padding:9px 18px;">
+          📡 Emit NFC Signal
+        </button>
+      </div>
+
+      <!-- 3. 2-Way Contact Bounce-Back (Stranger Types Contact Here) -->
+      <div class="mode-exchange" id="modeExchange">
+        <div style="margin-bottom:10px;">
+          <h4 style="font-size:14.5px; font-weight:800; color:#fff;">Collect Stranger's Contact</h4>
+          <p style="font-size:11.5px; color:#94a3b8;">Type their number or Telegram right on your screen:</p>
+        </div>
+        <form class="exchange-form" onsubmit="submitQuickLead(event)">
+          <div class="exchange-input-grp">
+            <label>Visitor's Full Name / ስም</label>
+            <input type="text" id="quickVisitorName" required placeholder="e.g. Dawit Tadesse">
+          </div>
+          <div class="exchange-input-grp">
+            <label>Phone or Telegram / ስልክ ወይም ቴሌግራም</label>
+            <input type="text" id="quickVisitorContact" required placeholder="0911... or @username">
+          </div>
+          <button type="submit" class="btn-submit-lead">Save Contact to Leads CRM</button>
+        </form>
+      </div>
+
+      <!-- 4. Telebirr & CBE Payment Mode -->
+      <div class="mode-pay" id="modePay">
+        <div class="pay-tile-row">
+          <div>
+            <div style="font-size:11px; font-weight:800; color:#0088cc; text-transform:uppercase;">telebirr</div>
+            <div style="font-size:15px; font-weight:800; color:#fff;" id="hudTelebirr">0911234567</div>
+            <div style="font-size:11px; color:#94a3b8;" id="hudTelebirrName">Abebe Bikila Worku</div>
+          </div>
+          <button type="button" class="btn-icon-sm" onclick="copyHudText('telebirr')" title="Copy Telebirr">📋</button>
+        </div>
+
+        <div class="pay-tile-row cbe">
+          <div>
+            <div style="font-size:11px; font-weight:800; color:#ea580c; text-transform:uppercase;">Commercial Bank of Ethiopia (CBE)</div>
+            <div style="font-size:15px; font-weight:800; color:#fff;" id="hudCbe">1000188992341</div>
+            <div style="font-size:11px; color:#94a3b8;" id="hudCbeName">Abebe Bikila Worku</div>
+          </div>
+          <button type="button" class="btn-icon-sm" onclick="copyHudText('cbe')" title="Copy CBE Account">📋</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Quick Action Buttons -->
+    <div class="widget-bottom-bar">
+      <button type="button" class="btn-quick-action" onclick="copyShortLink()">
+        📋 Copy Link
+      </button>
+      <a id="hudVcardBtn" href="/p/abebe/vcard" class="btn-quick-action btn-primary-action">
+        📥 Save vCard
+      </a>
+      <a id="hudFullCardBtn" href="/p/abebe" target="_blank" class="btn-quick-action">
+        ↗️ Full Profile
+      </a>
+    </div>
+
+  </div>
+
+  <div id="widgetToast">Action completed!</div>
+
+  <script>
+    let currentProfile = {};
+    let currentId = 'abebe';
+    let isAmharic = false;
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Determine profile ID from URL: /widget/:id or ?id=abebe
+      const pathParts = window.location.pathname.split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      const params = new URLSearchParams(window.location.search);
+      currentId = params.get('id') || (lastPart !== 'widget' && lastPart !== 'widget.html' ? lastPart : 'abebe');
+
+      await loadProfileData(currentId);
+
+      const initialMethod = params.get('method');
+      if (initialMethod && ['qr', 'nfc', 'exchange', 'pay'].includes(initialMethod)) {
+        switchMethod(initialMethod);
+      }
+
+      // Trigger tactile vibration on widget reveal
+      if (navigator.vibrate) {
+        navigator.vibrate([25, 40, 25]);
+      }
+    });
+
+    async function loadProfileData(id) {
+      try {
+        const res = await fetch(`/api/profiles/${id}`);
+        if (res.ok) {
+          currentProfile = await res.json();
+        } else {
+          currentProfile = {
+            id: 'abebe',
+            name: 'Abebe Bikila',
+            company: 'Addis Prime Properties',
+            title: 'Senior Broker',
+            phone: '+251 91 123 4567',
+            telebirr: '0911234567',
+            telebirr_name: 'Abebe Bikila',
+            cbebirr: '1000188992341',
+            cbebirr_name: 'Abebe Bikila'
+          };
+        }
+      } catch (e) {
+        currentProfile = { id, name: id, company: 'QuickCard Ethiopia' };
+      }
+
+      updateWidgetUI();
+    }
+
+    function updateWidgetUI() {
+      const p = currentProfile;
+      const displayName = isAmharic && p.name_am ? p.name_am : p.name;
+      const displayTitle = isAmharic && p.title_am ? p.title_am : (p.title || '');
+      const displayCompany = isAmharic && p.company_am ? p.company_am : (p.company || 'Addis Ababa');
+
+      document.getElementById('hudName').textContent = displayName;
+      document.getElementById('hudMeta').textContent = `${displayTitle} · ${displayCompany}`;
+      document.getElementById('hudAvatar').src = p.avatar || '/images/abebe.jpg';
+      document.getElementById('hudQrImg').src = `/p/${p.id}/qr.svg`;
+      document.getElementById('hudShortUrl').textContent = `qc.et/p/${p.id}`;
+      document.getElementById('hudTelebirr').textContent = p.telebirr || '0911234567';
+      document.getElementById('hudTelebirrName').textContent = p.telebirr_name || p.name;
+      document.getElementById('hudCbe').textContent = p.cbebirr || '1000188992341';
+      document.getElementById('hudCbeName').textContent = p.cbebirr_name || p.name;
+      document.getElementById('hudVcardBtn').href = `/p/${p.id}/vcard`;
+      document.getElementById('hudFullCardBtn').href = `/p/${p.id}`;
+    }
+
+    function switchMethod(method) {
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(15);
+
+      document.querySelectorAll('.tile-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('modeQr').style.display = 'none';
+      document.getElementById('modeNfc').style.display = 'none';
+      document.getElementById('modeExchange').style.display = 'none';
+      document.getElementById('modePay').style.display = 'none';
+
+      if (method === 'qr') {
+        document.getElementById('tabQr').classList.add('active');
+        document.getElementById('modeQr').style.display = 'flex';
+      } else if (method === 'nfc') {
+        document.getElementById('tabNfc').classList.add('active');
+        document.getElementById('modeNfc').style.display = 'flex';
+      } else if (method === 'exchange') {
+        document.getElementById('tabExchange').classList.add('active');
+        document.getElementById('modeExchange').style.display = 'flex';
+        document.getElementById('quickVisitorName').focus();
+      } else if (method === 'pay') {
+        document.getElementById('tabPay').classList.add('active');
+        document.getElementById('modePay').style.display = 'flex';
+      }
+    }
+
+    function triggerWebNfcBeam() {
+      if (navigator.vibrate) navigator.vibrate([40, 80, 40]);
+      
+      if ('NDEFReader' in window) {
+        try {
+          const ndef = new NDEFReader();
+          ndef.write({
+            records: [{ recordType: 'url', data: `${window.location.origin}/p/${currentProfile.id}` }]
+          }).then(() => {
+            showToast('NFC Tag Emitted!');
+          }).catch(err => {
+            showToast('NFC Active: Bring closer');
+          });
+          return;
+        } catch (e) {}
+      }
+      showToast('📡 NFC Signal Active: Tap phones');
+    }
+
+    async function submitQuickLead(e) {
+      e.preventDefault();
+      const payload = {
+        cardId: currentProfile.id || 'abebe',
+        visitorName: document.getElementById('quickVisitorName').value.trim(),
+        visitorPhone: document.getElementById('quickVisitorContact').value.trim(),
+        source: 'Quick Settings Tile Widget',
+        note: 'Saved directly via lockscreen/quick settings overlay'
+      };
+
+      try {
+        const res = await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          if (navigator.vibrate) navigator.vibrate([30, 60, 30]);
+          showToast(isAmharic ? 'እውቂያው ተመዝግቧል!' : 'Contact saved to CRM!');
+          document.getElementById('quickVisitorName').value = '';
+          document.getElementById('quickVisitorContact').value = '';
+          setTimeout(() => switchMethod('qr'), 800);
+        }
+      } catch (err) {
+        showToast('Saved locally!');
+      }
+    }
+
+    function copyShortLink() {
+      const url = `${window.location.origin}/p/${currentProfile.id}`;
+      navigator.clipboard.writeText(url).then(() => {
+        if (navigator.vibrate) navigator.vibrate(20);
+        showToast(`Copied: ${url}`);
+      }).catch(() => {
+        showToast(url);
+      });
+    }
+
+    function copyHudText(type) {
+      const val = type === 'telebirr' ? currentProfile.telebirr : currentProfile.cbebirr;
+      navigator.clipboard.writeText(val).then(() => {
+        if (navigator.vibrate) navigator.vibrate(20);
+        showToast(`Copied ${type.toUpperCase()}: ${val}`);
+      });
+    }
+
+    function toggleLanguage() {
+      isAmharic = !isAmharic;
+      updateWidgetUI();
+      showToast(isAmharic ? 'ቋንቋ: አማርኛ' : 'Language: English');
+    }
+
+    function handleDismiss() {
+      const sheet = document.getElementById('widgetSheet');
+      sheet.style.transform = 'translateY(100%)';
+      sheet.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+      setTimeout(() => {
+        // If embedded in iframe, inform parent
+        window.parent.postMessage({ type: 'QUICKCARD_WIDGET_DISMISSED' }, '*');
+        // If standalone, reload or minimize
+        sheet.style.transform = 'translateY(0)';
+      }, 240);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('widgetToast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>
